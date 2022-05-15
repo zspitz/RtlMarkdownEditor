@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32421.90
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RtlMarkdownEditor", "RtlMarkdownEditor\RtlMarkdownEditor.csproj", "{93A6103B-08AB-4078-8F69-E750346391D2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "_testWebviewDialogs", "_testWebviewDialogs\_testWebviewDialogs.csproj", "{AF463BDE-4C6F-4DCA-A8C8-52C95E02C449}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{93A6103B-08AB-4078-8F69-E750346391D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93A6103B-08AB-4078-8F69-E750346391D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93A6103B-08AB-4078-8F69-E750346391D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93A6103B-08AB-4078-8F69-E750346391D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF463BDE-4C6F-4DCA-A8C8-52C95E02C449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF463BDE-4C6F-4DCA-A8C8-52C95E02C449}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF463BDE-4C6F-4DCA-A8C8-52C95E02C449}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF463BDE-4C6F-4DCA-A8C8-52C95E02C449}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BEDCD5A8-2C8F-4E96-BF08-922BA5D478C3}
+	EndGlobalSection
+EndGlobal

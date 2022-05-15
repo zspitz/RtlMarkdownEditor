@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "_testWebviewDialogs": {
+      "commandName": "Project",
+      "nativeDebugging": false
+    }
+  }
+}

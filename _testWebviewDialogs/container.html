@@ -1,0 +1,15 @@
+﻿<!DOCTYPE html>
+<html>
+<body>
+    <button id="button1">Click me</button>
+    <img id ="img1" src="" />
+    <script>
+        document.getElementById("button1").addEventListener('click', ev => {
+            chrome.webview.postMessage('source');
+        });
+        window.chrome.webview.addEventListener('message', event => {
+            document.getElementById('img1').src = `https://assets/${event.data}`;
+        });
+    </script>
+</body>
+</html>

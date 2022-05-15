@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>RTL Markdown Editory</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/styles/default.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/languages/javascript.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/easymde/dist/easymde.min.js"></script>
+    <style>
+        body {
+            font-family: Arial;
+        }
+
+        .editor-preview {
+            direction: rtl;
+        }
+
+        .editor-preview pre {
+            direction: ltr;
+        }
+
+        .EasyMDEContainer .CodeMirror {
+            height: 600px;
+        }
+
+        .editor-statusbar {
+            direction: ltr;
+            text-align: left;
+        }
+    </style>
+</head>
+<body dir="rtl" lang="he">
+    <textarea id="editor"></textarea>
+    <script>
+        const mde = (() => {
+            function postAction(command) {
+                chrome.webview.postMessage({
+                    command,
+                    value: ret.value(),
+                    isDirty: !mde.codemirror.isClean()
+                });
+            }
+
+            let ret = new EasyMDE({
+                autofocus: true,
+                autoDownloadFontAwesome: true,
+                direction: 'rtl',
+                element: document.getElementById('editor'),
+                spellChecker: false,
+                renderingConfig: {
+                    codeSyntaxHighlighting: true
+                },
+                sideBySideFullscreen: false,
+                showIcons: ['table'],
+                status: ['lines', 'words', 'cursor'],
+                previewRender: text => {
+                    let html = ret.markdown(text);
+                    html = html.replace("<img src=\"", "<img src=\"https://assets/");
+                    console.log(html);
+                    return html;
+                }
+            });
+
+            // tried adding unicode bidi control characters to be displayed with a placeholder
+            // but this doesn't work
+            // ret.codemirror.specialChars = /[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u200b-\u200f\u2028\u2029\ufeff\ufff9-\ufffc\u2066-\u2069\u202A-\u202E]/;
+
+            ret.gui.toolbar.remove();
+            ret.toolbar.splice(0, 0, {
+                name: 'new',
+                action: () => postAction('new'),
+                className: 'fa fa-file',
+                title: 'Open file'
+            }, {
+                name: 'open',
+                action: () => postAction('open'),
+                className: 'fa fa-folder-open',
+                title: 'Open file'
+            }, {
+                name: 'save',
+                action: () => postAction('save'),
+                className: 'fa-solid fa-floppy-disk',
+                title: 'Save file'
+            }, {
+                name: 'saveas',
+                action: () => postAction('saveas'),
+                className: 'fa-solid fa-floppy-disk-pen',
+                title: 'Save file as'
+            },
+            '|');
+            ret.createToolbar();
+
+            ret.toggleSideBySide();
+            return ret;
+        })();
+
+        // TODO when getting in a new value, mark as clean
+
+        window.chrome.webview.addEventListener('message', event => {
+            let { success, newValue } = event.data;
+            if (!success) { return; }
+            mde.codemirror.markClean();
+            if (newValue === null) { return; }
+            mde.value(newValue);
+            mde.codemirror.markClean();
+        });
+    </script>
+</body>
+</html>
