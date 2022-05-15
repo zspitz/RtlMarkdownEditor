@@ -56,7 +56,7 @@
                 status: ['lines', 'words', 'cursor'],
                 previewRender: text => {
                     let html = ret.markdown(text);
-                    html = html.replace("<img src=\"", "<img src=\"https://assets/");
+                    html = html.replaceAll("<img src=\"", "<img src=\"https://assets/");
                     console.log(html);
                     return html;
                 }

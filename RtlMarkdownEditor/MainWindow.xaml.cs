@@ -8,26 +8,32 @@ using System.Windows;
 using ZSpitz.Util;
 using System.Threading;
 using Microsoft.Web.WebView2.Core;
+using System.IO;
+using System.Reflection;
 
 namespace RtlMarkdownEditor {
     public partial class MainWindow : Window {
         private string? currentFilePath;
-        const string hostname = "assets";
+        static readonly string execPath = GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+        static readonly string symlinkPath = Combine(execPath, "assets");
+        static readonly string dummySymlinkTarget = Combine(execPath, "assets1");
+
+        private void recreateSymlink(string target) {
+            if (Directory.Exists(symlinkPath)) {
+                Directory.Delete(symlinkPath);
+            }
+            Directory.CreateSymbolicLink(symlinkPath, target);
+        }
 
         private string? CurrentFilePath {
             get => currentFilePath;
             set {
                 currentFilePath = value;
-                if (currentFilePath.IsNullOrWhitespace()) {
-                    webview.CoreWebView2.ClearVirtualHostNameToFolderMapping(hostname);
-                } else {
-                    var parent = GetDirectoryName(currentFilePath);
-                    webview.CoreWebView2.SetVirtualHostNameToFolderMapping(
-                        hostname,
-                        parent,
-                        CoreWebView2HostResourceAccessKind.Allow
-                    );
-                }
+                var symlinkTarget =
+                    currentFilePath.IsNullOrWhitespace() ?
+                        dummySymlinkTarget :
+                        GetDirectoryName(currentFilePath)!;
+                recreateSymlink(symlinkTarget);
             }
         }
 
@@ -36,13 +42,13 @@ namespace RtlMarkdownEditor {
             Loaded += async (s, e) => await initializeAsync();
             Closing += (s, e) =>
                 e.Cancel = MessageBoxResult.No == MessageBox.Show(
-                    "Warning: if there are unsaved changes they will be lost.\nClose anyway?", 
-                    "", 
+                    "Warning: if there are unsaved changes they will be lost.\nClose anyway?",
+                    "",
                     MessageBoxButton.YesNo
                 );
         }
 
-        private bool promptSave(string value, bool forceNewFilename= false) {
+        private bool promptSave(string value, bool forceNewFilename = false) {
             if (forceNewFilename || CurrentFilePath.IsNullOrWhitespace()) {
                 var dlgSave = new VistaSaveFileDialog() {
                     AddExtension = true,
@@ -63,9 +69,18 @@ namespace RtlMarkdownEditor {
 
         private async Task initializeAsync() {
             await webview.EnsureCoreWebView2Async();
+
+            recreateSymlink(dummySymlinkTarget);
+            
+            webview.CoreWebView2.SetVirtualHostNameToFolderMapping(
+                "assets",
+                symlinkPath,
+                CoreWebView2HostResourceAccessKind.Allow
+            );
+
             var html = await ReadAllTextAsync("container.html");
             webview.NavigateToString(html);
-            webview.CoreWebView2.WebMessageReceived += (s, e) => 
+            webview.CoreWebView2.WebMessageReceived += (s, e) =>
                 SynchronizationContext.Current!.Post(_ => {
                     var (command, value, isDirty) =
                         JsonSerializer.Deserialize<MessageFromWebView>(e.WebMessageAsJson) ??

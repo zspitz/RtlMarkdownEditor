@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Web.WebView2.Core;
@@ -13,12 +14,25 @@ public partial class MainWindow : Window {
     private async Task initializeAsync() {
         await webview.EnsureCoreWebView2Async();
 
-        webview.CoreWebView2.WebMessageReceived += (s, e) => {
-            webview.CoreWebView2.SetVirtualHostNameToFolderMapping(
-                "assets",
-                @"C:\Users\Spitz\Desktop\testmd",
-                CoreWebView2HostResourceAccessKind.Allow
+        var symlinkPath =
+            Path.Combine(
+                Path.GetDirectoryName(
+                    Assembly.GetExecutingAssembly().Location!
+                )!,
+                "assets"
             );
+
+        Directory.CreateDirectory(symlinkPath);
+
+        webview.CoreWebView2.SetVirtualHostNameToFolderMapping(
+            "assets",
+            symlinkPath,
+            CoreWebView2HostResourceAccessKind.Allow
+        );
+
+        webview.CoreWebView2.WebMessageReceived += (s, e) => {
+            Directory.Delete(symlinkPath);
+            Directory.CreateSymbolicLink(symlinkPath, @"C:\Users\Spitz\Desktop\testmd");
             webview.CoreWebView2.PostWebMessageAsString(@"breakpoint.bmp");
         };
 
