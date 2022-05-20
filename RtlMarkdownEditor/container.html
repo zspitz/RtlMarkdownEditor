@@ -16,9 +16,9 @@
             direction: rtl;
         }
 
-        .editor-preview pre {
-            direction: ltr;
-        }
+            .editor-preview pre {
+                direction: ltr;
+            }
 
         .EasyMDEContainer .CodeMirror {
             height: 600px;
@@ -62,9 +62,7 @@
                 }
             });
 
-            // tried adding unicode bidi control characters to be displayed with a placeholder
-            // but this doesn't work
-            // ret.codemirror.specialChars = /[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u200b-\u200f\u2028\u2029\ufeff\ufff9-\ufffc\u2066-\u2069\u202A-\u202E]/;
+            ret.codemirror.options.specialChars = /[\u0000-\u001f\u007f-\u009f\u00ad\u061c\u200b-\u200f\u2028\u2029\ufeff\ufff9-\ufffc\u2066-\u2069\u202A-\u202E]/;
 
             ret.gui.toolbar.remove();
             ret.toolbar.splice(0, 0, {
@@ -80,15 +78,15 @@
             }, {
                 name: 'save',
                 action: () => postAction('save'),
-                className: 'fa-solid fa-floppy-disk',
+                className: 'fa fa-floppy-o',
                 title: 'Save file'
             }, {
                 name: 'saveas',
                 action: () => postAction('saveas'),
-                className: 'fa-solid fa-floppy-disk-pen',
+                className: 'fa fa-files-o',
                 title: 'Save file as'
             },
-            '|');
+                '|');
             ret.createToolbar();
 
             ret.toggleSideBySide();
