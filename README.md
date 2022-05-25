@@ -14,10 +14,11 @@ Specific goals:
     * If RTL, insert LRI before selecttion
     * If neutral, insert FSI
   * Command can't be used on a selection that spans multiple block elements, e.g. across multiple paragraphs
+  * (Question: can uincode bidi control ranges overlap)
 * Display the directional character codes as special characters
 * Show direction of character before and after current selection in status bar: →→, →←, ←←, ←→
 
 Currently:
 
 * RTL editor and preview (no toggle)
-* No dislay of special Unicode characters (https://github.com/Ionaru/easy-markdown-editor/issues/427)
+* Unicode bidi control characters have a placeholder
